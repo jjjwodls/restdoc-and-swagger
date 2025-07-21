@@ -1,0 +1,54 @@
+apply plugin: 'com.epages.restdocs-api-spec'
+apply plugin: 'org.hidetake.swagger.generator'
+
+def generatedOpenapi3YamlFile = layout.buildDirectory.dir("api-spec/openapi3.yaml").get()
+def swaggerPath = layout.buildDirectory.dir("swagger-ui-sample")
+
+openapi3 {
+    def host = System.getenv('HOST')
+    if (host == null) {
+        host = "http://localhost:8080"
+    }
+    logger.lifecycle("current host : ${host}")
+    setServer("${host}") // API 요청을 보낼 서버 주소 설정
+    title = "restdocs-swagger API Documentation" // API 문서 제목
+    description = "Spring REST Docs with SwaggerUI." // API 문서 설명
+    version = "0.0.1" // API 문서 버전
+    format = "yaml" // API 문서 출력 포맷 (default = JSON)
+}
+
+dependencies {
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc' // (4)
+    //restdoc 설정 추가
+    testImplementation "com.epages:restdocs-api-spec-mockmvc:${restdocsApiSpecVersion}"
+    //swagger ui 관련된 디펜던시 추가 generateSwaggerUISample 에서 사용되는 ui 디펜던시
+    swaggerUI 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+}
+
+swaggerSources {
+    sample {
+        setInputFile(file(generatedOpenapi3YamlFile))
+    }
+}
+
+// bootJar 실행 전, copySwaggerUI 를 실행하도록 설정
+tasks.register('copySwaggerUI', Copy) {
+    dependsOn 'generateSwaggerUISample'
+
+    from(swaggerPath)
+    into("./src/main/resources/static/docs")
+
+    logger.lifecycle("Copying from ${swaggerPath} to src/main/resources/static/docs")
+}
+
+tasks.withType(GenerateSwaggerUI).configureEach {
+    dependsOn 'openapi3'
+}
+
+bootJar {
+    archiveFileName = "${rootProject.name}.jar"
+    dependsOn test
+    logger.lifecycle("create docs")
+    dependsOn copySwaggerUI
+}
+
