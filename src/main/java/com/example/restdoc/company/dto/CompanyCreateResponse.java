@@ -9,14 +9,10 @@ import lombok.Getter;
 public class CompanyCreateResponse {
 
     private Long id;
-    private String companyName;
-    private String companyAddress;
 
     public static CompanyCreateResponse from(Company company) {
         return CompanyCreateResponse.builder()
                 .id(company.getId())
-                .companyName(company.getName())
-                .companyAddress(company.getAddress())
                 .build();
     }
 }

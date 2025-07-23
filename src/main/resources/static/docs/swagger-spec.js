@@ -12,9 +12,9 @@ window.swaggerSpec={
   "paths" : {
     "/company" : {
       "post" : {
-        "tags" : [ "Board" ],
-        "summary" : "알림 수정",
-        "description" : "update 정보를 통해 알림을 업데이트할 수 있다.",
+        "tags" : [ "Company" ],
+        "summary" : "company 생성",
+        "description" : "companyCreateRequest 를 통해 Company 를 생성할 수 있다.",
         "operationId" : "company-controller-test/create",
         "requestBody" : {
           "content" : {
@@ -23,6 +23,9 @@ window.swaggerSpec={
                 "$ref" : "#/components/schemas/CompanyCreateRequest"
               },
               "examples" : {
+                "company-controller-test/create-fail" : {
+                  "value" : "{\"companyName\":\"\",\"address\":\"\"}"
+                },
                 "company-controller-test/create" : {
                   "value" : "{\n  \"companyName\" : \"companyName\",\n  \"address\" : \"company address\"\n}"
                 }
@@ -31,6 +34,9 @@ window.swaggerSpec={
           }
         },
         "responses" : {
+          "400" : {
+            "description" : "400"
+          },
           "201" : {
             "description" : "201",
             "content" : {
@@ -40,7 +46,7 @@ window.swaggerSpec={
                 },
                 "examples" : {
                   "company-controller-test/create" : {
-                    "value" : "{\n  \"id\" : 1,\n  \"companyName\" : \"company name\",\n  \"companyAddress\" : \"company address\"\n}"
+                    "value" : "{\n  \"id\" : 1\n}"
                   }
                 }
               }
@@ -51,9 +57,9 @@ window.swaggerSpec={
     },
     "/company/{id}" : {
       "get" : {
-        "tags" : [ "Board" ],
-        "summary" : "회사 조회",
-        "description" : "회사 id를 통해 정보를 조회할 수 있다.",
+        "tags" : [ "Company" ],
+        "summary" : "company 조회",
+        "description" : "company id를 통해 정보를 조회할 수 있다.",
         "operationId" : "company-controller-test/get-company",
         "parameters" : [ {
           "name" : "id",
@@ -74,7 +80,7 @@ window.swaggerSpec={
                 },
                 "examples" : {
                   "company-controller-test/get-company" : {
-                    "value" : "{\n  \"id\" : 1,\n  \"companyName\" : \"company name\",\n  \"companyAddress\" : \"company address\"\n}"
+                    "value" : "{\"id\":1,\"companyName\":\"company name\",\"companyAddress\":\"company address\"}"
                   }
                 }
               }
@@ -105,6 +111,17 @@ window.swaggerSpec={
           }
         }
       },
+      "CompanyCreateResponse" : {
+        "title" : "CompanyCreateResponse",
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "number",
+            "description" : "created company id"
+          }
+        }
+      },
       "CompanyCreateRequest" : {
         "title" : "CompanyCreateRequest",
         "required" : [ "address", "companyName" ],
@@ -117,25 +134,6 @@ window.swaggerSpec={
           "companyName" : {
             "type" : "string",
             "description" : "company name"
-          }
-        }
-      },
-      "CompanyCreateResponse" : {
-        "title" : "CompanyCreateResponse",
-        "required" : [ "companyAddress", "companyName", "id" ],
-        "type" : "object",
-        "properties" : {
-          "companyAddress" : {
-            "type" : "string",
-            "description" : "created company address"
-          },
-          "companyName" : {
-            "type" : "string",
-            "description" : "created company name"
-          },
-          "id" : {
-            "type" : "number",
-            "description" : "created company id"
           }
         }
       }

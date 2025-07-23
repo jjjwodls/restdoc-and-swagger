@@ -6,17 +6,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class CompanyService {
 
-
     private final CompanyJpaRepository companyJpaRepository;
-
     public Company createCompany(Company company) {
         company.setId(1L);
         Company save = companyJpaRepository.save(company);
@@ -27,6 +22,5 @@ public class CompanyService {
     public Company findOne(Long id){
         return companyJpaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("id" + id + " is not found"));
     }
-
 
 }
